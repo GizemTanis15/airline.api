@@ -63,6 +63,16 @@ POST /api/v1/checkin        Passenger check-in                ✖️       ✖�
 GET /api/v1/passengers      List passengers by flight          ✔        ✔
 
 
+ ER Diagram 
+ 
+![Görüntü](https://github.com/user-attachments/assets/048196a0-6645-47a5-90d3-e9041f973786)
+
+This ER diagram represents the core data models and their relationships in the Airline API system.
+The flights table stores basic flight information such as dates, origin/destination airports, duration, and capacity.
+The tickets table represents the tickets sold for each flight and is linked to the flights table through the flight_id foreign key.
+The checkins table tracks the passenger check-in process and is also linked to the flights table via flight_id.
+All relationships are one-to-many, meaning one flight can have multiple tickets and check-ins.
+
   Notes
 
 Authentication is required using JWT for secure endpoints.
