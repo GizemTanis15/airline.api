@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # JWT config
-app.config["JWT_SECRET_KEY"] = "super-secret-key"  # bunu ileride gizli tutacağız
+app.config["JWT_SECRET_KEY"] = "super-secret-key"  
 jwt = JWTManager(app)
 
 # Swagger config
@@ -44,7 +44,7 @@ swagger_template = {
 }
 swagger = Swagger(app, template=swagger_template)
 
-# ✈️ Uçuş Ekleme (POST)
+
 @app.route('/api/v1/flights', methods=['POST'])
 @jwt_required()
 def add_flight():
@@ -103,7 +103,7 @@ def add_flight():
             if field not in data:
                 return jsonify({"error": f"'{field}' field is required"}), 400
 
-        # Yeni Flight nesnesi oluştur
+        
         new_flight = Flight(
             date_from=data["date_from"],
             date_to=data["date_to"],
@@ -145,7 +145,7 @@ class Flight(db.Model):
 class Ticket(db.Model):
     __tablename__ = 'tickets'
     id = db.Column(db.Integer, primary_key=True)
-    ticket_number = db.Column(db.String(10), nullable=False)  # EKLENECEK
+    ticket_number = db.Column(db.String(10), nullable=False)  
     flight_id = db.Column(db.Integer, db.ForeignKey('flight.id'), nullable=False)
     passenger_name = db.Column(db.String(100), nullable=False)
 
@@ -156,9 +156,9 @@ class Checkin(db.Model):
     passenger_name = db.Column(db.String(100), nullable=False)
     seat_number = db.Column(db.Integer)
 
-# ✈️ Uçuşları Listeleme (GET)
+
 @app.route('/api/v1/flights', methods=['GET'])
-@jwt_required(optional=True)  # İsteğe bağlı olarak korumalı veya herkese açık olabilir
+@jwt_required(optional=True)  
 def get_flights():
     """
     Get paginated list of flights
@@ -214,7 +214,7 @@ def get_flights():
         "id": f.id,
         "airport_from": f.airport_from,
         "airport_to": f.airport_to,
-        "date_from": f.date_from,  # istersen str(f.date_from) veya f.date_from.isoformat()
+        "date_from": f.date_from,  
         "date_to": f.date_to,
         "duration": f.duration,
         "capacity": f.capacity
@@ -228,7 +228,7 @@ def get_flights():
     })
 
 
-# 🎟️ Bilet Satın Alma (POST)
+
 @app.route('/api/v1/tickets', methods=['POST'])
 @jwt_required()
 def buy_ticket():
@@ -265,29 +265,29 @@ def buy_ticket():
     flight_id = data.get("flight_id")
     passenger_name = data.get("passenger_name")
 
-    # Geçersiz giriş kontrolü
+    
     if not isinstance(passenger_name, str) or len(passenger_name.strip()) == 0 or len(passenger_name) > 100:
         return jsonify({"error": "Invalid passenger name"}), 400
 
     if flight_id is None or not isinstance(flight_id, int):
         return jsonify({"error": "Invalid flight ID"}), 400
 
-    # Uçuş kontrolü
+   
     flight = Flight.query.get(flight_id)
     if not flight:
         return jsonify({"error": "Invalid flight ID"}), 400
 
-    # Kapasite kontrolü
+   
     if flight.capacity <= 0:
         return jsonify({"message": "Flight is sold out!"}), 409
 
-    # Kapasiteyi azalt
+    
     flight.capacity -= 1
 
-    # Bilet numarası oluştur
+    
     ticket_number = f"T{Ticket.query.count() + 1:03d}"
 
-    # Yeni ticket oluştur
+    
     new_ticket = Ticket(
         ticket_number=ticket_number,
         flight_id=flight_id,
@@ -307,7 +307,7 @@ def buy_ticket():
     }), 201
 
 
-# ✅ Bilet İptali (DELETE)
+
 @app.route('/api/v1/tickets', methods=['DELETE'])
 @jwt_required()
 def cancel_ticket():
@@ -346,30 +346,30 @@ def cancel_ticket():
     flight_id = data.get("flight_id")
     passenger_name = data.get("passenger_name")
 
-    # Giriş doğrulama
+    
     if not isinstance(passenger_name, str) or not passenger_name.strip():
         return jsonify({"error": "Invalid passenger name"}), 400
     if not isinstance(flight_id, int):
         return jsonify({"error": "Invalid flight ID"}), 400
 
-    # Uçuş kontrolü
+    
     flight = Flight.query.get(flight_id)
     if not flight:
         return jsonify({"error": "Flight not found"}), 400
 
-    # Bilet kontrolü
+    
     ticket = Ticket.query.filter_by(flight_id=flight_id, passenger_name=passenger_name).first()
     if not ticket:
         return jsonify({"error": "Ticket not found"}), 404
 
-    # Silme işlemi
+    
     db.session.delete(ticket)
     flight.capacity += 1
     db.session.commit()
 
     return jsonify({"message": "Ticket cancelled successfully"}), 200
 
-# ✅ Check-in (POST)
+
 @app.route('/api/v1/checkin', methods=['POST'])
 @jwt_required()
 def check_in():
@@ -408,21 +408,21 @@ def check_in():
     flight_id = data.get("flight_id")
     passenger_name = data.get("passenger_name")
 
-    # Giriş doğrulama
+   
     if not isinstance(flight_id, int) or not isinstance(passenger_name, str) or not passenger_name.strip():
         return jsonify({"error": "Invalid input"}), 400
 
-    # Uçuş kontrolü
+  
     flight = Flight.query.get(flight_id)
     if not flight:
         return jsonify({"error": "Invalid flight ID"}), 400
 
-    # Bilet kontrolü
+   
     ticket = Ticket.query.filter_by(flight_id=flight_id, passenger_name=passenger_name).first()
     if not ticket:
         return jsonify({"error": "No valid ticket found for passenger"}), 404
 
-    # Zaten check-in yapılmış mı?
+    
     existing = Checkin.query.filter_by(flight_id=flight_id, passenger_name=passenger_name).first()
     if existing:
         return jsonify({
@@ -430,10 +430,10 @@ def check_in():
             "seat_number": existing.seat_number
         }), 200
 
-    # Koltuk numarası belirle
+   
     seat_number = Checkin.query.filter_by(flight_id=flight_id).count() + 1
 
-    # Yeni check-in oluştur
+  
     checkin = Checkin(
         flight_id=flight_id,
         passenger_name=passenger_name,
@@ -448,7 +448,7 @@ def check_in():
     }), 200
 
 
-# 👥 Yolcu Listesi (GET)
+
 @app.route('/api/v1/passengers', methods=['GET'])
 @jwt_required()
 def get_passenger_list():
@@ -569,7 +569,7 @@ def login():
     username = data.get("username")
     password = data.get("password")
 
-    # Sahte kullanıcı kontrolü
+    
     if username == "admin" and password == "1234":
         access_token = create_access_token(identity=username)
         return jsonify(access_token=access_token), 200
@@ -579,6 +579,6 @@ def login():
 with app.app_context():
     db.create_all()
 
-# 🟢 EN SONA BU GELMELİ
+
 if __name__ == '__main__':
     app.run(debug=True)
