@@ -10,6 +10,7 @@ retrieving passenger lists.
 
 The Airline API allows: adding and querying flights, buying and canceling tickets,
 checking in passengers, viewing passenger lists for specific flights
+
 Authentication is required for most operations, and responses are documented using Swagger UI.
 
   Technologies Used
@@ -26,13 +27,20 @@ Python Version: 3.9
 Port: 5000
 Database URL: postgresql://postgres:Gizem.2002@localhost:5432/airline_api_db
 JWT Secret: Set in app.config["JWT_SECRET_KEY"] = "super-secret-key"
-Swagger UI: Accessible at http://127.0.0.1:5000/apidocs after running the app
+Swagger UI(LOCAL): Accessible at http://127.0.0.1:5000/apidocs after running the app
 Default Admin Credentials (for login): 
 {
   "username": "admin",
   "password": "1234"
 }
 
+  Render
+Live URL: https://airline-api-51of.onrender.com
+Swagger UI (live): https://airline-api-51of.onrender.com/apidocs
+Database (cloud): Automatically configured with Render PostgreSQL
+Environment Variables:
+  SQLALCHEMY_DATABASE_URI: postgresql://airline_db_xvmm_user:jWArm2hSAQDCAfPBTIi4LbwiWIpyDirv@dpg-d043462li9vc738b34c0-a/airline_db_xvmm
+  JWT_SECRET_KEY: "super-secret-key"
 
    Authentication
 
@@ -73,11 +81,21 @@ The tickets table represents the tickets sold for each flight and is linked to t
 The checkins table tracks the passenger check-in process and is also linked to the flights table via flight_id.
 All relationships are one-to-many, meaning one flight can have multiple tickets and check-ins.
 
+  Live Deployment (Render)
+
+The project is deployed using Render. You can access the live API and its Swagger documentation below:
+
+- Live API Base URL: [https://airline-api-51of.onrender.com](https://airline-api-51of.onrender.com)
+- Swagger UI: [https://airline-api-51of.onrender.com/apidocs](https://airline-api-51of.onrender.com/apidocs)
+
+All endpoints are accessible via this base URL.
+
   Notes
 
 Authentication is required using JWT for secure endpoints.
 Pagination is implemented for /flights and /passengers endpoints.
 Example requests and responses are documented in Swagger UI.
 Ensure PostgreSQL is running and a database named airline_api_db is created.
+On Render, environment variables such as `SQLALCHEMY_DATABASE_URI` are set automatically via the dashboard.
 
 - Author: Gizem Tanış - Computer Engineering Student
