@@ -1,1 +1,6 @@
-gunicorn 
+flask
+gunicorn
+flasgger
+flask_sqlalchemy
+flask_jwt_extended
+psycopg2-binary
