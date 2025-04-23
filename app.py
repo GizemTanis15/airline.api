@@ -2,12 +2,14 @@ from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from flasgger import Swagger
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 
 app = Flask(__name__)
 
+
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Gizem.2002@localhost:5432/airline_api_db'
+app.config['SQLALCHEMY_DATABASE_URL'] = os.environ.get("postgresql://airline_db_xvmm_user:jWArm2hSAQDCAfPBTIi4LbwiWIpyDirv@dpg-d043462li9vc738b34c0-a/airline_db_xvmm")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
