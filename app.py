@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("postgresql://airline_db_xvmm_user:jWArm2hSAQDCAfPBTIi4LbwiWIpyDirv@dpg-d043462li9vc738b34c0-a/airline_db_xvmm")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("SQLALCHEMY_DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
