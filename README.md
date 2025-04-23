@@ -90,6 +90,11 @@ The project is deployed using Render. You can access the live API and its Swagge
 
 All endpoints are accessible via this base URL.
 
+  Demo Video
+Watch the full walkthrough of the project, including setup, features, Swagger UI, and deployment on Render:
+https://youtu.be/z-a1Ak7Ugwk
+The video covers how the Airline API works, how to interact with the endpoints, and how to deploy it to a live server.
+
   Notes
 
 Authentication is required using JWT for secure endpoints.
